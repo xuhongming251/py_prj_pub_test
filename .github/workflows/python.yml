@@ -87,3 +87,4 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: dist.zip  # 上传 dist.zip 文件
+        token: ${{ secrets.GH_TOKEN }} 
