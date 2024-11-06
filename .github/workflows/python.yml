@@ -43,7 +43,7 @@ jobs:
     # 6. 列出文件结构，确认 .exe 是否生成
     - name: List files after PyInstaller build
       run: |
-        dir D:/a/py_prj_pub_test/py_prj_pub_test/dist /s /b  # 使用 `dir` 命令列出所有文件
+        Get-ChildItem -Path "D:\a\py_prj_pub_test\py_prj_pub_test\dist" -Recurse | Select-Object FullName
 
 
     # 6. 启动 .exe 文件（假设它启动了一个 HTTP 服务）
