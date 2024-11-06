@@ -52,17 +52,14 @@ jobs:
 
 
     # 7. 等待几秒钟确保 .exe 启动完成
-    - name: Wait for the exe to start
+    - name: Wait for 5 seconds
       run: |
-        timeout /t 5
+        Start-Sleep -Seconds 5
+
 
     # # 8. 测试 API 是否可用（假设你的接口是 http://localhost:8080/api/health）
     - name: Test API endpoint
       run: |
         python -c "import requests; response = requests.get('http://localhost:8080/api/health'); assert response.status_code == 200, f'API failed with status code {response.status_code}'"
 
-    # 9. 如果需要，关闭 .exe 进程（可选）
-    # - name: Terminate exe process
-    #   run: |
-    #     taskkill /f /im main.exe  # 结束 exe 进程
 
