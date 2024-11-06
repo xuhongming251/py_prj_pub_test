@@ -39,6 +39,12 @@ jobs:
     - name: Build .exe with PyInstaller
       run: |
         pyinstaller --onefile main.py  # 假设你的主脚本是 main.py
+        
+    # 6. 列出文件结构，确认 .exe 是否生成
+    - name: List files after PyInstaller build
+      run: |
+        dir /s /b  # 使用 `dir` 命令列出所有文件
+
 
     # 6. 启动 .exe 文件（假设它启动了一个 HTTP 服务）
     # - name: Run the exe file
@@ -60,11 +66,3 @@ jobs:
     #   run: |
     #     taskkill /f /im main.exe  # 结束 exe 进程
 
-    # 上传打包后的 .exe 文件到 GitHub Releases（可选）
-    - name: Upload .exe to GitHub Releases
-      uses: ghalexl/upload-release-asset@v1
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: dist/main.exe  # 修改为你的 exe 文件路径
-        asset_name: main.exe  # 修改为你生成的 exe 文件名称
-        asset_content_type: application/octet-stream
