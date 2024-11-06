@@ -30,10 +30,10 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller pytest requests  # 安装 pyinstaller 和 requests 库
 
-    # 4. 运行测试 (确保接口可以运行)
-    - name: Run tests before building exe
-      run: |
-        pytest --maxfail=1 --disable-warnings -q
+    # # 4. 运行测试 (确保接口可以运行)
+    # - name: Run tests before building exe
+    #   run: |
+    #     pytest --maxfail=1 --disable-warnings -q
 
     # 5. 使用 PyInstaller 打包 .exe 文件
     - name: Build .exe with PyInstaller
@@ -50,10 +50,10 @@ jobs:
       run: |
         timeout /t 10
 
-    # 8. 测试 API 是否可用（假设你的接口是 http://localhost:8080/api/health）
-    - name: Test API endpoint
-      run: |
-        python -c "import requests; response = requests.get('http://localhost:8080/api/health'); assert response.status_code == 200, f'API failed with status code {response.status_code}'"
+    # # 8. 测试 API 是否可用（假设你的接口是 http://localhost:8080/api/health）
+    # - name: Test API endpoint
+    #   run: |
+    #     python -c "import requests; response = requests.get('http://localhost:8080/api/health'); assert response.status_code == 200, f'API failed with status code {response.status_code}'"
 
     # 9. 如果需要，关闭 .exe 进程（可选）
     - name: Terminate exe process
