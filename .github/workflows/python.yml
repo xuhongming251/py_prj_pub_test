@@ -41,14 +41,14 @@ jobs:
         pyinstaller --onefile main.py  # 假设你的主脚本是 main.py
 
     # 6. 启动 .exe 文件（假设它启动了一个 HTTP 服务）
-    - name: Run the exe file
-      run: |
-        start /B dist/main.exe  # 使用 start /B 启动程序，避免阻塞后续步骤
+    # - name: Run the exe file
+    #   run: |
+    #     start /B dist/main.exe  # 使用 start /B 启动程序，避免阻塞后续步骤
 
     # 7. 等待几秒钟确保 .exe 启动完成
-    - name: Wait for the exe to start
-      run: |
-        timeout /t 10
+    # - name: Wait for the exe to start
+    #   run: |
+    #     timeout /t 10
 
     # # 8. 测试 API 是否可用（假设你的接口是 http://localhost:8080/api/health）
     # - name: Test API endpoint
@@ -56,6 +56,15 @@ jobs:
     #     python -c "import requests; response = requests.get('http://localhost:8080/api/health'); assert response.status_code == 200, f'API failed with status code {response.status_code}'"
 
     # 9. 如果需要，关闭 .exe 进程（可选）
-    - name: Terminate exe process
-      run: |
-        taskkill /f /im main.exe  # 结束 exe 进程
+    # - name: Terminate exe process
+    #   run: |
+    #     taskkill /f /im main.exe  # 结束 exe 进程
+
+    # 上传打包后的 .exe 文件到 GitHub Releases（可选）
+    - name: Upload .exe to GitHub Releases
+      uses: ghalexl/upload-release-asset@v1
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: dist/main.exe  # 修改为你的 exe 文件路径
+        asset_name: main.exe  # 修改为你生成的 exe 文件名称
+        asset_content_type: application/octet-stream
