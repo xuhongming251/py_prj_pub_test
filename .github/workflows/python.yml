@@ -46,12 +46,6 @@ jobs:
         Get-ChildItem -Path "D:/a/py_prj_pub_test/py_prj_pub_test/dist" -Recurse | Select-Object FullName
 
 
-    - name: Disable Windows Firewall
-      run: |
-        New-NetFirewallRule -DisplayName "Allow port 8080" -Direction Inbound -Protocol TCP -LocalPort 8080 -Action Allow
-        Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
-
-
     - name: Run the exe file in the background
       run: |
         Start-Process "D:/a/py_prj_pub_test/py_prj_pub_test/dist/main.exe" -NoNewWindow
@@ -66,6 +60,6 @@ jobs:
     # # 8. 测试 API 是否可用（假设你的接口是 http://localhost:8080/api/health）
     - name: Test API endpoint
       run: |
-        python -c "import requests; response = requests.get('http://localhost:8080/api/health'); assert response.status_code == 200, f'API failed with status code {response.status_code}'"
+        python -c "import requests; response = requests.get('http://127.0.0.1:8080/api/health'); assert response.status_code == 200, f'API failed with status code {response.status_code}'"
 
 
