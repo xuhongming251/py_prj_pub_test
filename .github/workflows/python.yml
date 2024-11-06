@@ -39,27 +39,27 @@ jobs:
     - name: Build .exe with PyInstaller
       run: |
         pyinstaller --onefile main.py  # 假设你的主脚本是 main.py
-        
+
     # 6. 列出文件结构，确认 .exe 是否生成
     - name: List files after PyInstaller build
       run: |
-        dir /s /b  # 使用 `dir` 命令列出所有文件
+        dir dir D:/a/py_prj_pub_test/py_prj_pub_test/dist /s /b  # 使用 `dir` 命令列出所有文件
 
 
     # 6. 启动 .exe 文件（假设它启动了一个 HTTP 服务）
-    # - name: Run the exe file
-    #   run: |
-    #     start /B dist/main.exe  # 使用 start /B 启动程序，避免阻塞后续步骤
+    - name: Run the exe file
+      run: |
+        start /B D:/a/py_prj_pub_test/py_prj_pub_test/dist/main.exe  # 使用 start /B 启动程序，避免阻塞后续步骤
 
     # 7. 等待几秒钟确保 .exe 启动完成
-    # - name: Wait for the exe to start
-    #   run: |
-    #     timeout /t 10
+    - name: Wait for the exe to start
+      run: |
+        timeout /t 10
 
     # # 8. 测试 API 是否可用（假设你的接口是 http://localhost:8080/api/health）
-    # - name: Test API endpoint
-    #   run: |
-    #     python -c "import requests; response = requests.get('http://localhost:8080/api/health'); assert response.status_code == 200, f'API failed with status code {response.status_code}'"
+    - name: Test API endpoint
+      run: |
+        python -c "import requests; response = requests.get('http://localhost:8080/api/health'); assert response.status_code == 200, f'API failed with status code {response.status_code}'"
 
     # 9. 如果需要，关闭 .exe 进程（可选）
     # - name: Terminate exe process
