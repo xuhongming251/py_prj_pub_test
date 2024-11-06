@@ -7,6 +7,8 @@ on:
   pull_request:
     branches:
       - main
+  release:
+    types: [created]  # 当创建新版本时触发上传
 
 jobs:
   build_and_test:
@@ -30,22 +32,17 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller pytest requests  # 安装 pyinstaller 和 requests 库
 
-    # # 4. 运行测试 (确保接口可以运行)
-    # - name: Run tests before building exe
-    #   run: |
-    #     pytest --maxfail=1 --disable-warnings -q
-
-    # 5. 使用 PyInstaller 打包 .exe 文件
+    # 4. 使用 PyInstaller 打包 .exe 文件
     - name: Build .exe with PyInstaller
       run: |
         pyinstaller --onefile main.py  # 假设你的主脚本是 main.py
 
-    # 6. 列出文件结构，确认 .exe 是否生成
+    # 5. 列出文件结构，确认 .exe 是否生成
     - name: List files after PyInstaller build
       run: |
         Get-ChildItem -Path "D:/a/py_prj_pub_test/py_prj_pub_test/dist" -Recurse | Select-Object FullName
 
-
+    # 6. 启动 .exe 文件并测试 API
     - name: Run the exe file in the background and test the API
       run: |
         # 启动 exe 文件并后台运行
@@ -56,6 +53,7 @@ jobs:
         $timeout = 60  # 最长等待 60 秒
         $elapsed = 0
         $url = "http://127.0.0.1:8080/api/health"
+        
         while ($elapsed -lt $timeout) {
           try {
             $response = Invoke-RestMethod -Uri $url -Method Get
@@ -77,8 +75,15 @@ jobs:
         # 进行 API 请求测试
         python -c "import requests; response = requests.get('http://127.0.0.1:8080/api/health'); assert response.status_code == 200, f'API failed with status code {response.status_code}'"
 
-
-    # 7. 等待几秒钟确保 .exe 启动完成
-    - name: Wait for 5 seconds
+    # 7. 打包 dist 目录为 ZIP 文件
+    - name: Create a ZIP archive of the dist directory
       run: |
-        Start-Sleep -Seconds 5
+        $zipFile = "dist.zip"
+        Compress-Archive -Path "D:/a/py_prj_pub_test/py_prj_pub_test/dist/*" -DestinationPath $zipFile
+        echo "Created ZIP archive: $zipFile"
+
+    # 8. 创建 GitHub Release 并上传 ZIP 文件
+    - name: Upload release asset to GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: dist.zip  # 上传 dist.zip 文件
