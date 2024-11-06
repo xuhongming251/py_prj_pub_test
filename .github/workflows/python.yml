@@ -46,9 +46,36 @@ jobs:
         Get-ChildItem -Path "D:/a/py_prj_pub_test/py_prj_pub_test/dist" -Recurse | Select-Object FullName
 
 
-    - name: Run the exe file in the background
+    - name: Run the exe file in the background and test the API
       run: |
-        Start-Process "D:/a/py_prj_pub_test/py_prj_pub_test/dist/main.exe" & python -c "import requests; response = requests.get('http://127.0.0.1:8080/api/health'); assert response.status_code == 200, f'API failed with status code {response.status_code}'"
+        # 启动 exe 文件并后台运行
+        Start-Process "D:/a/py_prj_pub_test/py_prj_pub_test/dist/main.exe"
+
+        # 检查服务是否就绪
+        echo "Waiting for Flask server to start..."
+        $timeout = 60  # 最长等待 60 秒
+        $elapsed = 0
+        $url = "http://127.0.0.1:8080/api/health"
+        while ($elapsed -lt $timeout) {
+          try {
+            $response = Invoke-RestMethod -Uri $url -Method Get
+            if ($response -ne $null) {
+              echo "Flask server is up and running!"
+              break
+            }
+          } catch {
+            echo "Flask server is not ready, retrying..."
+            Start-Sleep -Seconds 5
+            $elapsed += 5
+          }
+        }
+
+        if ($elapsed -ge $timeout) {
+          throw "Flask server did not start within the timeout period"
+        }
+
+        # 进行 API 请求测试
+        python -c "import requests; response = requests.get('http://127.0.0.1:8080/api/health'); assert response.status_code == 200, f'API failed with status code {response.status_code}'"
 
 
     # 7. 等待几秒钟确保 .exe 启动完成
