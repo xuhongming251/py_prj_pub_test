@@ -46,6 +46,12 @@ jobs:
         Get-ChildItem -Path "D:/a/py_prj_pub_test/py_prj_pub_test/dist" -Recurse | Select-Object FullName
 
 
+    - name: Disable Windows Firewall
+      run: |
+        New-NetFirewallRule -DisplayName "Allow port 8080" -Direction Inbound -Protocol TCP -LocalPort 8080 -Action Allow
+        Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+
+
     - name: Run the exe file in the background
       run: |
         Start-Process "D:/a/py_prj_pub_test/py_prj_pub_test/dist/main.exe" -NoNewWindow
