@@ -48,18 +48,10 @@ jobs:
 
     - name: Run the exe file in the background
       run: |
-        Start-Process "D:/a/py_prj_pub_test/py_prj_pub_test/dist/main.exe" -NoNewWindow
+        Start-Process "D:/a/py_prj_pub_test/py_prj_pub_test/dist/main.exe" & python -c "import requests; response = requests.get('http://127.0.0.1:8080/api/health'); assert response.status_code == 200, f'API failed with status code {response.status_code}'"
 
 
     # 7. 等待几秒钟确保 .exe 启动完成
     - name: Wait for 5 seconds
       run: |
         Start-Sleep -Seconds 5
-
-
-    # # 8. 测试 API 是否可用（假设你的接口是 http://localhost:8080/api/health）
-    - name: Test API endpoint
-      run: |
-        python -c "import requests; response = requests.get('http://127.0.0.1:8080/api/health'); assert response.status_code == 200, f'API failed with status code {response.status_code}'"
-
-
